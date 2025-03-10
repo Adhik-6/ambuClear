@@ -114,8 +114,9 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 const MapComponent = () => {
   const mapContainerStyle = { width: "600px", height: "400px" };
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
-  const [carPosition, setCarPosition] = useState({ lat: 0, lng: 0 });
+  const [ambulancePosition, setAmbulancePosition] = useState({ lat: 0, lng: 0 });
   const [trafficSignal, setTrafficSignal] = useState("red");
+  const [signalLocation, setSignalLocation] = useState({ lat: 12.872798538923576, lng: 80.22665094179462});
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -129,8 +130,8 @@ const MapComponent = () => {
             lng: initialLng,
           });
 
-          // Set the initial car position 400 meters south of the traffic signal
-          setCarPosition({
+          // Set the initial ambulance position 400 meters south of the traffic signal
+          setAmbulancePosition({
             lat: initialLat - 0.004, // Start 400 meters south of the center
             lng: initialLng,
           });
@@ -144,9 +145,9 @@ const MapComponent = () => {
   }, []);
 
   useEffect(() => {
-    const moveCar = () => {
+    const moveAmbulance = () => {
       const duration = 60000; // 60 seconds
-      const startLat = carPosition.lat;
+      const startLat = ambulancePosition.lat;
       const endLat = startLat + 0.008; // Move north by 800 meters (approx)
 
       let startTime = Date.now();
@@ -157,38 +158,37 @@ const MapComponent = () => {
 
         if (progress >= 1) {
           clearInterval(interval);
-          setCarPosition({ lat: startLat + 0.008, lng: carPosition.lng }); // Set final position
+          setAmbulancePosition({ lat: startLat + 0.008, lng: ambulancePosition.lng });
           setTimeout(() => {
-            // Reset car position after reaching the end
-            setCarPosition({ lat: startLat - 0.004, lng: carPosition.lng }); // Reset to initial position
-          }, 1000); // Wait 1 second before resetting
+            // Reset ambulance position after reaching the end
+            setAmbulancePosition({ lat: startLat - 0.004, lng: ambulancePosition.lng });
+          }, 1000);
         } else {
-          setCarPosition({
-            lat: startLat + (0.008) * progress, // Move towards the end position
-            lng: carPosition.lng,
+          setAmbulancePosition({
+            lat: startLat + 0.008 * progress,
+            lng: ambulancePosition.lng,
           });
         }
-      }, 1000); // Update every second
+      }, 1000);
 
       return () => clearInterval(interval);
     };
 
-    const startCarMovement = () => {
-      moveCar(); // Start moving the car immediately
-      const carMovementInterval = setInterval(moveCar, 60000); // Continue moving the car every 60 seconds
-      return () => clearInterval(carMovementInterval);
+    const startAmbulanceMovement = () => {
+      moveAmbulance();
+      const ambulanceMovementInterval = setInterval(moveAmbulance, 60000);
+      return () => clearInterval(ambulanceMovementInterval);
     };
 
-    const timeoutId = setTimeout(startCarMovement, 2000); // Start moving the car after 2 seconds
+    const timeoutId = setTimeout(startAmbulanceMovement, 2000);
 
     return () => clearTimeout(timeoutId);
-  }, [carPosition]);
+  }, [ambulancePosition]);
 
   useEffect(() => {
     const checkTrafficSignal = () => {
       const distance = 0.002; // Approx 200 meters in latitude
-
-      if (Math.abs(carPosition.lat - center.lat) < distance) {
+      if (Math.abs(ambulancePosition.lat - center.lat) < distance) {
         setTrafficSignal("green");
       } else {
         setTrafficSignal("red");
@@ -198,18 +198,23 @@ const MapComponent = () => {
     const trafficCheckInterval = setInterval(checkTrafficSignal, 1000);
 
     return () => clearInterval(trafficCheckInterval);
-  }, [carPosition, center]);
+  }, [ambulancePosition, center]);
 
   return (
     <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <div>
         <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={16}>
-          {/* Moving Car Marker */}
-          <Marker position={carPosition} icon={{ url: "https://img.icons8.com/color/48/car.png" }} />
+          {/* Moving Ambulance Marker */}
+          <Marker
+            position={ambulancePosition}
+            icon={{
+              url: "https://img.icons8.com/color/48/ambulance.png", // Ambulance icon
+            }}
+          />
 
           {/* Traffic Signal Marker */}
           <Marker
-            position={center}
+            position={signalLocation}
             icon={{
               url: trafficSignal === "red"
                 ? "https://img.icons8.com/color/48/stop-sign.png"
