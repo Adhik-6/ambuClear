@@ -17,3 +17,16 @@ To Run the program:
 3. Make sure you have node installed in your computer.
 4. run: `npm i`
 5. run: `npm run dev`
+
+To push changes, run the following:
+1. Navigate into ambuClear folder using `cd` command in terminal
+2. Run: `git add .`
+3. Run: `git commit -m "message_1"`
+4. Run: `git push -u origin main`
+
+To Pull changes:
+1. Run: `git pull`
+
+Things to add:
+1. Add 5 traffic signals
+2. Nearby ambulance must be visible when the app is opened.
