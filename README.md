@@ -25,7 +25,7 @@ To push changes, run the following:
 4. Run: `git push -u origin main`
 
 To Pull changes:
-1. Run: `git pull`
+1. Run: `git pull origin main`
 
 Things to add:
 1. Add 5 traffic signals
