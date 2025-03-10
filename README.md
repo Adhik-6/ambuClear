@@ -13,6 +13,7 @@ If you are developing a production application, we recommend using TypeScript an
 
 To Run the program:
 1. clone the repo
-2. run: `npm init`
-3. make sure add a .env file with variables: VITE_GOOGLE_MAPS_API_KEY
-4. run: `npm run dev`
+2. make sure add a .env file with variables: VITE_GOOGLE_MAPS_API_KEY
+3. Make sure you have node installed in your computer.
+4. run: `npm i`
+5. run: `npm run dev`
