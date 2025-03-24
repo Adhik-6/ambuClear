@@ -30,4 +30,3 @@ To Pull changes:
 Things to add:
 1. Add 5 traffic signals
 2. Nearby ambulance must be visible when the app is opened.
-3. new line -- for chekcing
